@@ -1,0 +1,39 @@
+﻿@page "/"
+@inject IJSRuntime JS
+
+<div class="box">
+    <div>
+        <h1>Gvault</h1>
+        <input type="type" name="name" @bind="Password" id="password" />
+        <button class="copy-to-clipboard" @onclick="CopyToClipboard">COPY TO CLIPBOARD</button>
+        <br />
+        <br /><br />
+        <select @bind="Size">
+            <option value="16">Strong (16 characters)</option>
+            <option value="25">Very Strong (25 characters)</option>
+        </select>
+        <button @onclick="GeneratePassword">GENERATE</button>
+    </div>
+</div>
+
+@code
+{
+    public short Size { get; set; }
+    public string Password { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Size = 16;
+        Password = SecureIdentity.Password.PasswordGenerator.Generate();
+    }
+
+    private void GeneratePassword()
+    {
+        Password = SecureIdentity.Password.PasswordGenerator.Generate(Size);
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JS.InvokeAsync<string>("copyToClipboard");
+    }
+}
