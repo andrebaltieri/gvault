@@ -1,0 +1,31 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.8.0
+        with:
+          dotnet-version: 5.x
+      - name: Publish .NET Core Project
+        run: dotnet publish Gvault.csproj -c Release -o release --nologo
+        
+      - name: Commit wwwroot to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: release/wwwroot
+
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
