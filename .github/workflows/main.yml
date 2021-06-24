@@ -15,9 +15,16 @@ jobs:
         uses: actions/setup-dotnet@v1.8.0
         with:
           dotnet-version: 5.x
+          
       - name: Publish .NET Core Project
         run: dotnet publish Gvault.csproj -c Release -o release --nologo
+      
+      - name: Change base-tag in index.html
+        run: sed -i 's/<base href="\/" \/>/<base href="\/Gvault\/" \/>/g' release/wwwroot/index.html
         
+      - name: Add .nojekyll file
+        run: touch release/wwwroot/.nojekyll
+      
       - name: Commit wwwroot to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
